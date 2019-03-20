@@ -8,16 +8,14 @@ def test_classifier(classifier, testcases):
   return num_correct / float(len(testcases))
 
 
+def test_classifier_auto(classifier, boardsize=5, n=1000):
+  testcases = create_testcases(boardsize, n)
+  score = test_classifier(dummy_classifier, testcases)
+  return score
+
+
 def dummy_classifier(b):
   return [0] * len(b)
-
-
-def test_dummy_classifier():
-  testcases = create_testcases(5, 1000)
-  print_board(testcases[0][0])
-  print_board(testcases[0][1])
-  score = test_classifier(dummy_classifier, testcases)
-  print(score)
 
 
 def create_testcases(boardsize, n):
@@ -65,6 +63,3 @@ def print_board(b):
   for i in range(size):
     print("".join(mapping[b[p]] for p in range(i * size, (i + 1) * size)))
   print()
-
-
-test_dummy_classifier()
