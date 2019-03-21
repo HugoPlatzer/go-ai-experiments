@@ -1,11 +1,31 @@
 #!/usr/bin/python3
 
-from random import choice
+from random import choice, random
 
 def test_classifier(classifier, testcases):
-  results = [classifier(tc[0]) for tc in testcases]
+  results = []
+  for tc in testcases:
+    result = classifier(tc[0])
+    result = [(0 if r < 0.0 else 1) for r in result]
+    results.append(result)
   num_correct = sum(1 for i in range(len(results)) if results[i] == testcases[i][1])
   return num_correct / float(len(testcases))
+
+
+def test_classifier_soft(classifier, testcases):
+  results = [classifier(tc[0]) for tc in testcases]
+  score = 0.0
+  for i in range(len(testcases)):
+    result = results[i]
+    expected = testcases[i][1]
+    result = [(0 if r < 0.0 else 1) for r in result]
+    score_i = sum((1.0 if result[i] == expected[i] else 0.0) for i in range(len(result)))
+    #score_i = -sum((result[i] - expected[i])**2 for i in range(len(result)))
+    #score_i /= float(len(result))
+    if result != expected:
+      score_i *= 0.000001
+    score += score_i
+  return score / float(len(testcases))
 
 
 def test_classifier_auto(classifier, boardsize=5, n=1000):
@@ -15,7 +35,7 @@ def test_classifier_auto(classifier, boardsize=5, n=1000):
 
 
 def dummy_classifier(b):
-  return [0] * len(b)
+  return [1 if random() < 1.0 else 1 for i in range(len(b))]
 
 
 def create_testcases(boardsize, n):
